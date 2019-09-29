@@ -1,0 +1,11 @@
+{
+  "name": "crearia",
+  "version": "0.3.2",
+  "description": "a light library to post ajax",
+  "main": "./src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "shawroger",
+  "license": "ISC"
+}
