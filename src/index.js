@@ -1,6 +1,13 @@
+/*
+* Crearia 0.4.0 
+* Easy ajax and easy response
+* Created by shawroger 2019
+*/
+
+
 !(function(global,factory) {   
     if (typeof define ==='function') {
-        define(function(){
+        define( function() {
             return (global.Crearia= factory());
         });
     }
@@ -12,21 +19,38 @@
     }
 } (this, function () {
     'use strict';
+    
     var it = {}; 
-    it.version = '0.3.2';
-    it.ajax = function() {
-        if(arguments.length === 1) {          
-            var content = this.send;
-            var callback = arguments[0];
-        }
-        if(arguments.length === 2) {
-            var content = arguments[0];
-            var callback = arguments[1];
-        }
+    
+    it.name = 'crearia';
+    
+    it.version = '0.4.0';
+
+    it.install= function(Vue, options) {
+        Vue.prototype.$crearia = this;
+    };
+
+    it.mixin = function(Obj,name='crearia') {
+
+        var ADD_OBJ = {};
+        var OBJ_NAME = '$'+name;
+        ADD_OBJ[OBJ_NAME] = this;
+        Object.assign(Obj,ADD_OBJ);
+        
+    };
+    
+    it.ajax = function(content, callback) {
+        
+        var TYPE = 'GET';
         var ajax;
         var message = '';
         var urlparam = '';
         var url = content.url; 
+        
+        if(content.post) {
+            TYPE = 'POST';
+        }  
+        
         if(content.get) {     
             for(var i in content.get) {
                 var key = i;
@@ -35,40 +59,54 @@
             }
         }
         if(content.random) {
-            var force_fresh_name = content.random.name;
-            var force_fresh_value = Math.floor(Math.pow(10,(parseInt(content.random.digit)+1))*Math.random());
-            urlparam = urlparam+'&'+force_fresh_name+'='+force_fresh_value;
+            var rand_name = content.random.name;
+            var rand_value = Math.floor(Math.pow(10,(parseInt(content.random.digit)+1))*Math.random());
+            urlparam = urlparam+'&'+rand_name+'='+rand_value;
         }
-        url = url +'?'+urlparam.substr(1);       
+        if(content.get && content.random) {
+            url = url +'?'+urlparam.substr(1);
+        }
+               
         if(window.XMLHttpRequest) {
             ajax = new XMLHttpRequest();
         } else {
             ajax = new ActiveXObject("Microsoft.XMLHTTP");
         }
+
         ajax.onreadystatechange = () => {
+            
             if(ajax.readyState === 4 && ajax.status === 200) {
+                
                 this.response = {};
-                this.response.html = ajax.response;
-                this.response.title = ajax.statusText;
+                this.response.data = ajax.responseText;
+                this.response.text = ajax.statusText;
                 this.response.msg = ajax.content;
                 this.response.state = ajax.readyState;
-                this.response.text = ajax.responseText;
                 this.response.url = ajax.responseURL;
-                callback.bind(this,this.response)();
+                callback.call(this,this.response);
             }
         }
-        ajax.open(content.type,url,true);
-        ajax.setRequestHeader('content-type','application/x-www-form-urlencoded');
+        
+        ajax.open(TYPE,url,true);
+       
         if(content.post) {
+            
+            ajax.setRequestHeader('content-type','application/x-www-form-urlencoded');
+            
             for(var i in content.post) {
+                
                 var key = i;
                 var value = content.post[i];
                 message = message+'&'+key+'='+value;
             }  
-        }
-        message = message.substr(1);     
+            message = message.substr(1);     
+            
+        } 
         ajax.send(message);
+        
         this.response = ajax;
         this.response.content = content;
-    };return it;
+    };
+    
+    return it;
 }));

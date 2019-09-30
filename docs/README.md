@@ -38,9 +38,34 @@ export default {
 
 ```
 
+新版本的`Crearia`也是一个`Vue`插件，可以直接安装
+
+```javascript
+import Crearia from 'crearia'
+Vue.use(Crearia)
+```
+
 # 基本教程
 
-> Crearia只有一个方法 **Crearia.ajax**
+## install
+
+`install`是专门为`Vue`导入组件设置的方法。
+
+```javascript
+import Crearia from 'crearia'
+Vue.use(Crearia)
+```
+
+## mixin
+
+`mixin`是一个强大的方法，其可以接收一个对象，其会把`Crearia`对象整体绑定到该对象上。
+
+```javascript
+import Crearia from 'crearia'
+Vue.use(Crearia)
+```
+
+## ajax
 
 在**Crearia.ajax**中需要传入一个对象即可，你将获得一个回调函数。
 
